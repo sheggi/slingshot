@@ -8,9 +8,9 @@
 require_once "core.php";
 //POST SET
 
-$_JSON = $_REQUEST = ["c" => "Money", "f" => "getRecordList", "a" => ["accountId" => "a01"] ];
+$_JSON = $_REQUEST = ["method" => "Record.getList", "accountId" => "a01"];
 
-$_RESPONSE["RESPONSE_TYPE"] = "DUMP";
+$_RESPONSE["RESPONSE_TYPE"] = "JSON";
 
 
 

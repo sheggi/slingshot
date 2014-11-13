@@ -1,40 +1,60 @@
 <?php
 
-class Record
+class RecordModel
 {
-	private $accountId;
 	private $db;
 	
-	function __construct($accountId){
+	function __construct(){
 		$this->db = DB::getInstance();
-		$this->accountId = $accountId;
 	}
 	
 	function add( $attr ){ //FIXXX validate attr
-		
+		$rec = new Record((isset($attr['record'])?$attr['record']:$attr));
+	
 		$string = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 		$str = "";
 		for($i=0;$i<4;$i++){
 			$pos = rand(0,62);
 			$str .= $string{$pos};
 		}
-		$id = "1". $str; //FIXXX unique id
+		$rec->id = "1". $str; //FIXXX unique id
 		
-		$query = "INSERT INTO `money_record` (id, account_id, amount, datetime, hint) VALUES ('".$id."','".$this->accountId."','".$attr['amount']."','".$attr['datetime']."','".$attr['hint']."');";
+		if($rec->isValid()){
 		
-		$mixed = mysql_query($query);
-		return $mixed;
+			
+			$query = "INSERT INTO `money_record` (id, account_id, amount, datetime, hint) VALUES ('".$rec->id."','".$rec->accountId."','".$rec->amount."','".$rec->datetime."','".$rec->hint."');";
+			
+			if(mysql_query($query)){
+				return ["record" => $rec];
+			} else {	
+				return false;
+			}
+		} else {
+			throw Exception("invalide Record");
+		}
 	}
 	
 	function delete( $attr ){ //FIXXX validate attr
+		$rec = $this->get($attr);
+		
 		$query = "DELETE FROM `money_record` WHERE `id`='".$attr['id']."';";
 		
 		$mixed = mysql_query($query);
-		return $mixed;
+		return ($mixed ? $rec : false);
 	}
 	
-	function getList(){
-		$query = "SELECT * FROM `money_record` ORDER BY `datetime` ASC";;
+	function get($attr){
+		$query = "SELECT * FROM `money_record`  WHERE `id`='".$attr['id']."' LIMIT 1;"; //FIXXX select attr
+		
+		$mixed = mysql_query($query);
+		$list = array();
+		$record = mysql_fetch_assoc($mixed);
+		
+		return ["record" => $record];
+	}
+	
+	function getList($attr){
+		$query = "SELECT * FROM `money_record` ORDER BY `datetime` ASC"; //FIXXX select attr
 		
 		$mixed = mysql_query($query);
 		$list = array();
@@ -44,22 +64,30 @@ class Record
 			array_push($list, $record);
 		}
 		
-		return $list;
-	}
-	
-	function getAccountId(){
-		return $this->recordAccountId;
+		return ["records" => $list];
 	}
 }
 
-class RecordFactory
+class Record extends RecordModel
 {
-	public static function create($accountId){
-		if(AccountFactory::validateId($accountId)){ //FIXXX validation
-			return new Record($accountId);
-		} else {
-			return null;
-		}
+	public $id;
+	public $accountId;
+	public $hint;
+	public $datetime;
+	public $amount;
+	
+	
+	function __construct($param){
+		$this->accountId = $param['accountId'];
+		$this->id = @$param['id'];
+		$this->hint = @$param['hint'];
+		$this->datetime = @$param['datetime'];
+		$this->amount = @$param['amount'];
 	}
 	
+	function isValid() {
+		$valide = true;
+		$valide &= Account::isValidId($this->id);
+		return ($this->accountId == "a01"); //FIXXX validation
+	}
 }

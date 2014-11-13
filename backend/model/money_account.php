@@ -1,16 +1,16 @@
 <?php 
 
-class Account
+class AccountModel
 {
 }
 
 
 
-class AccountFactory{
+class Account{
 
 
-	public static function validateId($id){
-		//FIXXX validation not complet
+	public static function isValidId($id){
+		//FIXXX validation not complete
 		
 		return ($id === "a01");
 	}
