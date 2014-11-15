@@ -1,5 +1,7 @@
 (function(){
 var app = angular.module('money', ['ui.bootstrap']);
+var urlHandle = location.origin +"/slingshot/backend/handle.php";
+console.log(urlHandle);
 
 var compareDatetime = function (a, b) {
 	if (a.datetime > b.datetime) {
@@ -16,7 +18,7 @@ var compareDatetime = function (a, b) {
 	$scope.records = [];
 	
 	req_data = {method:"Record.getList", accountId:"a01"};
-	$http.post("http://localhost/slingshot/backend/handle.php", req_data).
+	$http.post(urlHandle, req_data).
 	success( function(data, status){
 		//alert(data || status || "success");
 		
@@ -40,7 +42,7 @@ var compareDatetime = function (a, b) {
 		
 		req_data = {method:"Record.add", record: record};
 		
-		$http.post("http://localhost/slingshot/backend/handle.php", req_data).
+		$http.post(urlHandle, req_data).
 		success( function(data, status){
 			if(!data.error){
 				$scope.records.push(data.response.record);
@@ -68,7 +70,7 @@ var compareDatetime = function (a, b) {
 		
 		req_data = {method:"Record.delete", id: id};
 		
-		$http.post("http://localhost/slingshot/backend/handle.php", req_data).
+		$http.post(urlHandle, req_data).
 		success( function(data, status){
 			
 			console.log(data);
