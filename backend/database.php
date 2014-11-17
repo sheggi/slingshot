@@ -1,7 +1,8 @@
 <?php 
 if(basename(__FILE__) == basename($_SERVER['PHP_SELF'])) send_404();
 
- 
+// inital DB connection
+DB::getInstance();
 class DB
 {
 
@@ -58,9 +59,93 @@ class DB
     {
     }
 }
+
  
  
- 
+class DBModel {
+	private $TABLE_NAME = null;
+	private $db;
+	
+	function __construct($tablename){
+		$this->TABLE_NAME = $tablename;
+		$this->db = DB::getInstance();
+	}
+	
+	function INSERT($attr){
+		$ks = "";
+		$vs = "";
+		foreach ($attr as $k => $v){
+			$ks .= "`$k`,";
+			$vs .= "'$v',";
+		}
+		$ks = substr($ks,0,-1);
+		$vs = substr($vs,0,-1);
+		
+		$query = "INSERT INTO `".$this->TABLE_NAME."` ($ks) VALUES ($vs);";
+		if(mysql_query($query)){
+			return true;
+		} else {
+			throw new Exception(mysql_error());
+		}
+	}
+	
+	function SELECT($attr){
+		$orderBy = null;
+		$asc = null;
+		$limit = null;
+		$col = null;
+		
+		$orderBy = @$attr["ORDERBY"];
+		unset($attr["ORDERBY"]);
+		$asc = @$attr["ASC"];
+		unset($attr["ASC"]);
+		$limit = @$attr["LIMIT"];
+		unset($attr["LIMIT"]);
+		$col = @$attr["COLUMN"];
+		unset($attr["COLUMN"]);
+		
+		
+		
+		$cond = "";
+		foreach($attr as $k => $v){
+			$cond .= "`$k` = '$v' AND ";
+		}
+		$cond = substr($cond,0,-5);
+		
+		
+		$query = "SELECT ".(($col === null) ?  '*': $col)
+		." FROM ".$this->TABLE_NAME." "
+		.((empty($cond)) ? "" : "WHERE $cond " )
+		.((empty($orderBy)) ? "" : "ORDER BY $orderBy ")
+		.((empty($asc)) ? "ASC " : "$asc " )
+		.((empty($limit)) ? "" : "LIMIT $limit" ) . ";";
+		
+		var_dump($query);
+		var_dump($mixed = mysql_query($query));
+		var_dump(mysql_num_rows($mixed));
+		var_dump(mysql_fetch_assoc($mixed));
+	}
+	
+	function DELETE($attr){
+	}
+	
+	function UPDATE($attr){
+	}
+	
+	function QUERRY($attr){
+		if(isset($attr["STATEMENT"])){
+			$STATEMENT = $attr["STATEMENT"];
+			unset($attr["STATEMENT"]);
+			if(method_exists($this,$STATEMENT)){ 
+				return $this->$STATEMENT($attr);
+			} else {
+				throw new Exception('STATEMENT "'.$attr["STATEMENT"].'" unknown');
+			}
+		} else {
+			throw new Exception('STATEMENT not set');
+		}
+	}
+}
  
  
  

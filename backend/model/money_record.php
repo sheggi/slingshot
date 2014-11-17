@@ -30,7 +30,7 @@ class RecordModel
 				return false;
 			}
 		} else {
-			throw Exception("invalide Record");
+			throw new Exception("invalide Record");
 		}
 	}
 	

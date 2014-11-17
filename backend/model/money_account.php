@@ -2,6 +2,23 @@
 
 class AccountModel
 {
+	private $db;
+	
+	function __construct(){
+		$this->db = DB::getInstance();
+	}
+	
+	function add($attr){
+	}
+	
+	function delete($attr){
+	}
+	
+	function get($attr){
+	}
+	
+	function getList($attr){
+	}
 }
 
 
