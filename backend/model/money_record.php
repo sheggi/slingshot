@@ -1,93 +1,88 @@
 <?php
 
-class RecordModel
+class RecordModel extends DBModel
 {
-	private $db;
-	
-	function __construct(){
-		$this->db = DB::getInstance();
+	function __construct($param = null){
+		parent::__construct('money_record');
+		if($param !== null){
+			$this->PARAM = $param;
+		}
 	}
 	
-	function add( $attr ){ //FIXXX validate attr
-		$rec = new Record((isset($attr['record'])?$attr['record']:$attr));
-	
+	function newId(){
 		$string = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 		$str = "";
-		for($i=0;$i<4;$i++){
-			$pos = rand(0,62);
-			$str .= $string{$pos};
+		for($cycle=0; $cycle<1000; $cycle++){
+			for($i=0;$i<4;$i++){	
+				$pos = rand(0,61);
+				$str .= $string{$pos};
+			}
+			$id = "1". $str;
+			if(empty($this->select(["id"=>$id]))){
+				$this->id = $id;
+				return $id;
+			}
 		}
-		$rec->id = "1". $str; //FIXXX unique id
+		throw new Exception("no new record id available");
+	}
+	
+	function save($attr = null){ //FIXXX validate attr
+		if($attr !== null){
+			$this->PARAM = $attr;
+		}
+		if(empty($this->id)){
+			$this->newId();
+		}
 		
-		if($rec->isValid()){
-		
-			
-			$query = "INSERT INTO `money_record` (id, account_id, amount, datetime, hint) VALUES ('".$rec->id."','".$rec->accountId."','".$rec->amount."','".$rec->datetime."','".$rec->hint."');";
-			
-			if(mysql_query($query)){
-				return ["record" => $rec];
-			} else {	
-				return false;
+		if($this->isValide()){
+			if(empty($this->select())){
+				if($this->insert()){
+					return $this->load();
+				} else {	
+					return false;
+				}
+			} else {
+				if($this->update(array_push($this->PARAM, ["WHERE" => ["id"=>$this->id]]))){
+					return $this->load();
+				} else {
+					return false;
+				}
 			}
 		} else {
-			throw new Exception("invalide Record");
+			throw new Exception("invalide record data");
 		}
 	}
 	
-	function delete( $attr ){ //FIXXX validate attr
-		$rec = $this->get($attr);
-		
-		$query = "DELETE FROM `money_record` WHERE `id`='".$attr['id']."';";
-		
-		$mixed = mysql_query($query);
-		return ($mixed ? $rec : false);
-	}
-	
-	function get($attr){
-		$query = "SELECT * FROM `money_record`  WHERE `id`='".$attr['id']."' LIMIT 1;"; //FIXXX select attr
-		
-		$mixed = mysql_query($query);
-		$list = array();
-		$record = mysql_fetch_assoc($mixed);
-		
-		return ["record" => $record];
-	}
-	
-	function getList($attr){
-		$query = "SELECT * FROM `money_record` ORDER BY `datetime` ASC"; //FIXXX select attr
-		
-		$mixed = mysql_query($query);
-		$list = array();
-		while($record = mysql_fetch_assoc($mixed)){
-			$datetime = new DateTime($record["datetime"]);
-			$record["datetime"] = date_format($datetime, DateTime::ISO8601);
-			array_push($list, $record);
+	function load($attr = null){
+		if($attr !== null){
+			$this->PARAM = $attr;
+		} else {
+			$attr = $this->getParam();
 		}
-		
-		return ["records" => $list];
-	}
-}
-
-class Record extends RecordModel
-{
-	public $id;
-	public $accountId;
-	public $hint;
-	public $datetime;
-	public $amount;
-	
-	
-	function __construct($param){
-		$this->accountId = $param['accountId'];
-		$this->id = @$param['id'];
-		$this->hint = @$param['hint'];
-		$this->datetime = @$param['datetime'];
-		$this->amount = @$param['amount'];
+		$attr["LIMIT"] = 1;
+		$record = @$this->select($attr)[0];
+		$this->PARAM = $record;
+		return $record;
 	}
 	
-	function isValid() {
-		$valide = true;
-		$valide &= Account::isValidId($this->id);
-		return ($this->accountId == "a01"); //FIXXX validation
+	function find($attr = null){
+		if($attr !== null){
+			$this->PARAM = $attr;
+		}
+		$records = $this->select();
+		return $records;
+	}
+	
+	function isValide($attr = null) {
+		if($attr === null) {
+			$attr = $this->getParam();
+		}
+		$valider = Validator::getInstance();
+		$result = $valider->isValide([$this->getTableName()=> $attr]); 
+		if($result['valide']){
+			return true; 
+		} else {
+			throw new Exception($result['error']);
+		}
 	}
 }

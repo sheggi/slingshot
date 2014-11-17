@@ -3,9 +3,12 @@
  * $_JSON ist eine globale Variable, worin der JSON Request enthalten ist
  */
 $_JSON = json_decode(file_get_contents("php://input"), TRUE);
+if($_JSON == null){
+	$_JSON = [];
+}
 if( is_array($_REQUEST) && is_array($_JSON)) {
 	$_REQUEST = array_merge($_REQUEST, $_JSON);
-} else if ( is_array( $_JSON ) ){
+} else if ( empty($_REQUEST) && is_array( $_JSON ) ){
 	$_REQUEST = $_JSON;
 }
 
@@ -13,7 +16,10 @@ if( is_array($_REQUEST) && is_array($_JSON)) {
  * loading systemfiles
  */
 
-require_once("./database.php");
+foreach (glob("core/*.php") as $filename)
+{
+    require_once $filename;
+}
 
 foreach (glob("controller/*.php") as $filename)
 {
@@ -29,3 +35,4 @@ foreach (glob("model/*.php") as $filename)
  */
  
 $_RESPONSE = ["RESPONSE_TYPE" => "JSON"];
+

@@ -7,7 +7,7 @@ $origin = "http://". $_SERVER["HTTP_HOST"] . "/slingshot/frontend/";
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bootstrap 101 Template</title>
+    <title>Backend</title>
 
     <!-- Bootstrap -->
     <link href="<?php echo $origin; ?>css/bootstrap.css" rel="stylesheet">
@@ -83,13 +83,6 @@ $origin = "http://". $_SERVER["HTTP_HOST"] . "/slingshot/frontend/";
 	</div>
 	
 	
-	<hr>
-	<pre>
-	<?php include "preview.php";?>
-	</pre>
-	<hr>
-	
-	
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
@@ -97,5 +90,11 @@ $origin = "http://". $_SERVER["HTTP_HOST"] . "/slingshot/frontend/";
     <script src="<?php echo $origin; ?>js/angular.js"></script>
     <script src="<?php echo $origin; ?>js/ui-bootstrap-tpls-0.11.2.js"></script>
 	<script src="<?php echo $origin; ?>js/custome.js"></script>
+	
+	<hr>
+	<pre>
+	<?php include "preview.php";?>
+	</pre>
+	<hr>
   </body>
 </html>

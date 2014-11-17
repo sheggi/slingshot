@@ -17,13 +17,13 @@ var compareDatetime = function (a, b) {
 	app.controller('MoneyController', ['$scope', '$http', '$filter', function($scope, $http, $filter){
 	$scope.records = [];
 	
-	req_data = {method:"Record.getList", accountId:"a01"};
+	req_data = {method:"Record.find", accountId:"a01"};
 	$http.post(urlHandle, req_data).
 	success( function(data, status){
 		//alert(data || status || "success");
 		
 		console.log(data);
-		$scope.records = data.response.records;
+		$scope.records = data.response;
 		$scope.records.sort(compareDatetime);
 		
 	}).
@@ -35,30 +35,34 @@ var compareDatetime = function (a, b) {
  
 	$scope.newRecord = function(){
 		var date = $filter('date')($scope.datetime, 'yyyy-MM-ddTHH:mm:ssZ');
-		record = {accountId: "a01", datetime:date, amount: $scope.amount, hint: $scope.hint};
-		$scope.datetime = new Date();
-		$scope.amount = 0;
-		$scope.hint = "";
-		
-		req_data = {method:"Record.add", record: record};
-		
-		$http.post(urlHandle, req_data).
-		success( function(data, status){
-			if(!data.error){
-				$scope.records.push(data.response.record);
-				$scope.records.sort(compareDatetime);
-			}
+		if($scope.amount == undefined){
+			alert("gültige Zahl eingeben");
+		} else {
+			record = {accountId: "a01", datetime:date, amount: $scope.amount, hint: $scope.hint};
+			$scope.datetime = new Date();
+			$scope.amount = 0;
+			$scope.hint = "";
 			
-			console.log(data);
-			console.log(data.log);
+			req_data = record;
+			req_data.method = "Record.save";
 			
-		}).
-		error(function(data, status) {
-			alert( status || "Request failed");
-		});
-		
-		//$scope.records.push();
-		
+			$http.post(urlHandle, req_data).
+			success( function(data, status){
+				if(!data.error){
+					$scope.records.push(data.response);
+					$scope.records.sort(compareDatetime);
+				}
+				
+				console.log(data);
+				console.log(data.log);
+				
+			}).
+			error(function(data, status) {
+				alert( status || "Request failed");
+			});
+			
+			//$scope.records.push();
+		}
 	};
 	
 	$scope.deleteRecord = function(index, id){
