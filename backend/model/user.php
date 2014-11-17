@@ -1,9 +1,9 @@
 <?php
 
-class AccountModel extends DBModel
+class UserModel extends DBModel
 {
 	function __construct($param = null){
-		parent::__construct('money_account');
+		parent::__construct('user');
 		if($param !== null){
 			$this->PARAM = $param;
 		}
@@ -17,13 +17,13 @@ class AccountModel extends DBModel
 				$pos = rand(0,61);
 				$str .= $string{$pos};
 			}
-			$id = "a". $str;
+			$id = "u". $str;
 			if(empty($this->select(["id"=>$id]))){
 				$this->id = $id;
 				return $id;
 			}
 		}
-		throw new Exception("no new account id available");
+		throw new Exception("no new user id available");
 	}
 	
 	function save($attr = null){ //FIXXX validate attr
@@ -49,7 +49,7 @@ class AccountModel extends DBModel
 				}
 			}
 		} else {
-			throw new Exception("invalide account data");
+			throw new Exception("invalide user data");
 		}
 	}
 	
