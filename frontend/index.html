@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="myApp">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,6 +8,8 @@
 
     <!-- Bootstrap -->
     <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css/bootstrap-theme.css" rel="stylesheet">
+    <link href="css/custom.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -16,67 +18,55 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
   </head>
-  <body  ng-app="money">
-    <h1>Hello, world!</h1>
-	
-	
-	<div ng-controller="MoneyController as money">
-	<h2>User: {{session.user.nick}}</h2>
-	<h3>Account: {{session.account.title}}</h3>
-	
-	<table class="table">
-		
-		<thead>
-		<tr>
-			<th>Date</th>
-			<th>Description</th>
-			<th>Mutation</th>
-			<th>Summe</th>
-			<th><span class="glyphicon glyphicon-star"></span></th>
-		</tr>
-		</thead>
-		<tr ng-repeat="record in records">
-			<td>{{record.datetime | date:'dd.MM.yyyy HH:mm:ss'}}</td>
-			<td>{{record.hint}}</td>
-			<td>{{record.amount}}</td>
-			<td>{{record.saldo}}</td>
-			<th>
-				<button class="glyphicon glyphicon-edit"></button>
-				<button class="glyphicon glyphicon-ok"></button>
-				<button class="glyphicon glyphicon-remove"></button>
-				<button class="glyphicon glyphicon-trash" ng-click="deleteRecord($index, record.id)"></button>
-			</th>
-		</tr>
-		<tr>
-			<td>{{datetime | date:'dd.MM.yyyy HH:mm:ss'}}
-			<div style="display:inline-block; min-height:290px;">
-				<datepicker ng-model="datetime" show-weeks="true" class="well well-sm"></datepicker>
-				<timepicker ng-model="datetime" hour-step="1" minute-step="4" show-meridian="false"></timepicker>
+  <body ng-cloack="">
+	<nav class="navbar navbar-default navbar-fixed-top" role="navigation" ng-init="showMenu = true;">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" ng-click="showMenu=!showMenu">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" rel="home" title="Slingshot App">Slingshot App</a>
 			</div>
-			</td>
-			<td><input type="text" class="form-control" ng-model="hint" placeholder="Enter Description"></td>
-			<td><input type="number" class="form-control" ng-model="amount" required="true" placeholder="Enter Mutation">
-			</td>
-			<th colspan="2">
-				<button class="glyphicon glyphicon-ok" ng-click="newRecord()"></button>
-				<button class="glyphicon glyphicon-remove"></button>
-			</th>
-		</tr>
-	</table>
+			<div class="navbar-collapse" ng-class="{collapse: showMenu}">
+				<ul class="nav navbar-nav navbar-right">
+					<li><a href="#" class="navbar-link">Signed in as Mark Otto</a></li>
+					<li class="active"><a href="#">Dashboard <span class="sr-only">(current)</span></a></li>
+					<li><a href="#login">Login</a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+<div class="container" style="margin-top:20px;">
 	
+	<div ng-controller="moneyCtrl as money">
+		<button  type="button" class="btn btn-default" ng-click="logonAdmin();">Admin anmelden...</button>
+		<h2>User: {{user.nick}}</h2>
+		<accountlist></accountlist>
+		<h3>Account: {{account.title}}</h3>
+		
+		<recordlist></recordlist>
+			
 
-    
-
-  
-
-	
 	</div>
+	
+    <div data-ng-view="" id="ng-view" class="slide-animation"></div>
+	
+</div>
+	
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>-->
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="js/bootstrap.min.js"></script>
+    <!--<script src="js/bootstrap.min.js"></script>-->
     <script src="js/angular.js"></script>
     <script src="js/ui-bootstrap-tpls-0.11.2.js"></script>
-	<script src="js/custome.js"></script>
+	<script src="js/money.js"></script>
+	<script src="app/app.js"></script>
+	<script src="app/data.js"></script>
+	<script src="app/directives.js"></script>
+	<script src="app/moneyCtrl.js"></script>
+	
   </body>
 </html>

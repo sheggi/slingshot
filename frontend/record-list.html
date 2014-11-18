@@ -1,0 +1,38 @@
+<table class="table">	
+	<thead>
+	<tr>
+		<th>Date</th>
+		<th>Description</th>
+		<th>Mutation</th>
+		<th>Summe</th>
+		<th><span class="glyphicon glyphicon-star"></span></th>
+	</tr>
+	</thead>
+	<tr ng-repeat="record in records">
+		<td>{{record.datetime | date:'dd.MM.yyyy HH:mm:ss'}}</td>
+		<td>{{record.hint}}</td>
+		<td>{{record.amount}}</td>
+		<td>{{record.saldo}}</td>
+		<th>
+			<!--<button class="glyphicon glyphicon-edit"></button>
+			<button class="glyphicon glyphicon-ok"></button>
+			<button class="glyphicon glyphicon-remove"></button>-->
+			<button class="glyphicon glyphicon-trash" ng-click="deleteRecord($index, record.id)"></button>
+		</th>
+	</tr>
+	<tr>
+		<td>{{datetime | date:'dd.MM.yyyy HH:mm:ss'}}
+		</td>
+		<td><input type="text" class="form-control" ng-model="hint" placeholder="Enter Description"></td>
+		<td><input type="number" class="form-control" ng-model="amount" required="true" placeholder="Enter Mutation">
+		</td>
+		<th colspan="2">
+			<button class="glyphicon glyphicon-ok" ng-click="newRecord()"></button>
+			<button class="glyphicon glyphicon-remove"></button>
+		</th>
+	</tr>
+</table>
+<div style="display:inline-block; min-height:290px;">
+	<datepicker ng-model="datetime" show-weeks="true" class="well well-sm"></datepicker>
+	<timepicker ng-model="datetime" hour-step="1" minute-step="4" show-meridian="false"></timepicker>
+</div>
