@@ -83,7 +83,7 @@ app.controller('moneyCtrl',['$scope', '$http', '$filter', 'Data', function($scop
 	
 	$scope.deleteRecord = function(index, id){
 		
-		if(!confirm("Eintrag wirklich l&ooum;schen?")) {
+		if(!confirm("Eintrag wirklich löschen?")) {
 			return;
 		}
 		
