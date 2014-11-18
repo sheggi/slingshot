@@ -1,7 +1,7 @@
 app.factory("Data", ['$http',
     function ($http) { // This service connects to our REST API
 
-        var serviceBase = location.origin +"/slingshot/backend/handle.php";
+        var serviceBase = handleUrl;
 
         var obj = {};
         obj.get = function (q) {

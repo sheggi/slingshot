@@ -63,7 +63,7 @@ app.controller('moneyCtrl',['$scope', '$http', '$filter', 'Data', function($scop
 			req_data = record;
 			req_data.method = "Record.save";
 			
-			$http.post(urlHandle, req_data).
+			$http.post(handleUrl, req_data).
 			success(function(data, status){
 				if(!data.error){
 					$scope.records.push(data.response);
@@ -90,7 +90,7 @@ app.controller('moneyCtrl',['$scope', '$http', '$filter', 'Data', function($scop
 		
 		req_data = {method:"Record.delete", id: id};
 		
-		$http.post(urlHandle, req_data).
+		$http.post(handleUrl, req_data).
 		success(function(data, status){
 			
 			console.log(data);
